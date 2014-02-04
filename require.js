@@ -1,6 +1,4 @@
-﻿/*  browser:true, jshint eqeqeq:true, curly:true, forin:true, indent:4, nonew:false, quotmark:single, strict:true */
-
-(function (global, undefined) {
+﻿(function (global, undefined) {
     'use strict';
 
     var modules = {},
@@ -116,7 +114,7 @@
         } else if (typeof (shim = getPropertyCaseInsensitive(shims, name)) !== 'undefined') {
             return getProperty(global, shim.exports);
         } else if (isOfType(name, 'string') && required) {
-            throw Error('Cannon find module ' + name);
+            throw new Error('Cannon find module ' + name);
         } else {
             return undefined;
         }
@@ -128,7 +126,7 @@
                 return nodeRequire(deps);
             } catch (e) {
                 if (e.code !== 'MODULE_NOT_FOUND') {
-                    throw Error('Cannon find module ' + deps);
+                    throw new Error('Cannon find module ' + deps);
                 }
             }
         }
@@ -151,7 +149,7 @@
         /*
             shim: {
                 jQuery: { exports: 'jQuery' },
-	            underscore: { exports: '_' },
+                underscore: { exports: '_' },
                 'underscore.string': { exports: '_.str' }
             }
         */
