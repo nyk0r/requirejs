@@ -41,7 +41,16 @@
         return undefined;
     }
 
-    global.define = function (name, deps, init) {
+    /**
+     * Defines a new module. A defined module can be than required using the 'require' util.
+     * @example define('core/loader', function () { return {}; });
+     * @example define('utils/dom', ['core/loader'], function (loader) { return {}; });
+     * @example define('core/view', ['./loader', 'utils/dom'], function (loader, dom) { return {}; });
+     * @param {string} name - Full name of the module.
+     * @param {string[]} [deps] - Names of the required module. Names can be absolute or realtive using '.' or '..' at the begging.
+     * @param {function} init - A callback returning an initialized module. References to the required modules will be passed as parameters to the callback.
+     */
+    function define (name, deps, init) {
         if (arguments.length !== 2 && arguments.length !== 3) {
             throw new Error('Invalid params number');
         } else if (arguments.length === 2) {
@@ -120,7 +129,15 @@
         }
     }
 
-    global.require = function (deps, callback) {
+    /**
+     * Requires a defined modules by its fullname.
+     * @example require('core/view');
+     * @example require(['core/view', 'utils/dom'], function (view, dom) { view.render(); });
+     * @param {string[]|string} deps - Required modules or a single module.
+     * @param {function} [callback] - A callback to be called with the initialized required modules as params.
+     * @returns {object|undefined} If there is only one required module and a callback is not specified returns the required module, else returns undefined.
+     */
+    function require (deps, callback) {
         if (nodeRequire && isOfType(deps, 'string')) {
             try {
                 return nodeRequire(deps);
@@ -143,9 +160,15 @@
         } else {
             return depModules.length === 1 ? depModules[0] : depModules;
         }
+
+        return undefined;
     };
 
-    global.require.config = function (cfg) {
+    /**
+     * Configures require by RequireJS conventions.
+     * @params {object} cfg - config. 
+     */
+    require.config = function (cfg) {
         /*
             shim: {
                 jQuery: { exports: 'jQuery' },
@@ -160,11 +183,15 @@
         shims = cfg.shim || shims || {};
     };
 
-    Object.defineProperty(global.require, 'hasNativeRequire', {        
+    Object.defineProperty(require, 'hasNativeRequire', {        
        enumerable: true,
        configurable: false,
        get: function () {
            return !!nodeRequire;
        }
     });
+
+    // export global functions
+    global.define = define;
+    global.require = require;
 })(window);

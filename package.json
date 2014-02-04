@@ -4,7 +4,8 @@
     "description": "README.md",
     "devDependencies": {
         "grunt-contrib-jshint": ">=0.7",
-        "grunt-contrib-watch": ">=0.5"
+        "grunt-contrib-watch": ">=0.5",
+        "grunt-jsdoc": ">=0.5"
     },
     "author": "nyk0r <mozgunov@gmail.com>",
     "license": "MIT"
