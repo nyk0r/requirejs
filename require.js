@@ -114,7 +114,7 @@
         } else if (typeof (shim = getPropertyCaseInsensitive(shims, name)) !== 'undefined') {
             return getProperty(global, shim.exports);
         } else if (isOfType(name, 'string') && required) {
-            throw new Error('Cannon find module ' + name);
+            throw new Error('Cannot find module ' + name);
         } else {
             return undefined;
         }
@@ -126,7 +126,7 @@
                 return nodeRequire(deps);
             } catch (e) {
                 if (e.code !== 'MODULE_NOT_FOUND') {
-                    throw new Error('Cannon find module ' + deps);
+                    throw new Error('Cannot find module ' + deps);
                 }
             }
         }
