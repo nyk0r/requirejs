@@ -48,7 +48,7 @@
      * @example define('core/view', ['./loader', 'utils/dom'], function (loader, dom) { return {}; });
      * @param {string} name - Full name of the module.
      * @param {string[]} [deps] - Names of the required module. Names can be absolute or realtive using '.' or '..' at the begging.
-     * @param {function} init - A callback returning an initialized module. References to the required modules will be passed as parameters to the callback.
+     * @param {function} init - A callback returning an initialized module. References to the required modules will be passed as parameters to the callback. If init is an object then it is considered to be an already initialized module.
      */
     function define (name, deps, init) {
         if (arguments.length !== 2 && arguments.length !== 3) {
@@ -58,7 +58,9 @@
             deps = [];
         }
         
-        if (!isOfType(name, 'string') || !isOfType(deps, 'array') || !isOfType(init, 'function')) {
+        if (!isOfType(name, 'string') || 
+            !isOfType(deps, 'array') || 
+            (!isOfType(init, 'function') && !isOfType(init, 'object'))) {
             throw new Error('Invalid params order');
         }
         
@@ -66,12 +68,20 @@
             throw new Error('Module cannot be defined more than once');
         }
 
-        modules[name] = {
-            name: name,
-            deps: deps,
-            init: init
-        };
-    };
+        if (isOfType(init, 'function')) {
+            modules[name] = {
+                name: name,
+                deps: deps,
+                init: init
+            };
+        } else {
+            modules[name] = {
+                name: name,
+                deps: deps,
+                obj: init
+            };
+        }
+    }
 
     function getNameParts (name) {
         return name.split('/').filter(function (e) { return !!e.trim(); });
@@ -162,7 +172,7 @@
         }
 
         return undefined;
-    };
+    }
 
     /**
      * Configures require by RequireJS conventions.
