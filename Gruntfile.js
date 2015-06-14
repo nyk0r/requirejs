@@ -4,11 +4,20 @@ module.exports = function (grunt) {
         jshint: {
             files: ['require.js']
         },
-        jsdoc : {
-        dist : {
-            src: ['require.js'], 
-                options: { destination: 'doc' }
+        mocha: {
+            test: {
+                src: ['spec/index.html'],
+            },
+            options: {
+                run: true,
+                reporter: 'Dot'
             }
+        },
+        jsdoc : {
+            dist : {
+                src: ['require.js'],
+                    options: { destination: 'doc' }
+                }
         },
         watch: {
             files: 'require.js',
@@ -19,6 +28,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-jsdoc');
+    grunt.loadNpmTasks('grunt-mocha');
 
-    grunt.registerTask('hint', ['jshint']);
+    grunt.registerTask('test', ['jshint', 'mocha']);
 };

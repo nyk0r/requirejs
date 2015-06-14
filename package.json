@@ -1,12 +1,21 @@
 {
-    "name": "requirejs",
-    "version": "0.1.0",
-    "description": "README.md",
-    "devDependencies": {
-        "grunt-contrib-jshint": ">=0.7",
-        "grunt-contrib-watch": ">=0.5",
-        "grunt-jsdoc": ">=0.5"
-    },
-    "author": "nyk0r <mozgunov@gmail.com>",
-    "license": "MIT"
+  "name": "requirejs",
+  "version": "0.1.0",
+  "description": "README.md",
+  "devDependencies": {
+    "chai": "^3.0.0",
+    "grunt": ">=0.4.5",
+    "grunt-contrib-jshint": ">=0.11.2",
+    "grunt-contrib-watch": ">=0.6.1",
+    "grunt-jsdoc": ">=0.6.7",
+    "grunt-mocha": "^0.4.12",
+    "mocha": "^2.2.5",
+    "sinon": "^1.15.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/nyk0r/requirejs.git"
+  },
+  "author": "nyk0r <mozgunov@gmail.com>",
+  "license": "MIT"
 }

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Mocha tests for require.js</title>
+    </head>
+    <link rel="stylesheet" type="text/css" href="../node_modules/mocha/mocha.css"/>
+    <body>
+        <div id="mocha"></div>
+        <script type="text/javascript" src="../node_modules/mocha/mocha.js"></script>
+        <script type="text/javascript" src="../node_modules/chai/chai.js"></script>
+        <script type="text/javascript" src="../node_modules/sinon/pkg/sinon.js"></script>
+        <script>mocha.setup('bdd')</script>
+        <script type="text/javascript" src="../require.js"></script>
+        <script type="text/javascript" src="require.js"></script>
+        <script type="text/javascript" charset="utf-8">
+            if (navigator.userAgent.indexOf('PhantomJS') < 0) {
+                mocha.run();
+            }
+        </script>
+    </body>
+</html>

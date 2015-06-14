@@ -1,19 +1,19 @@
-﻿(function (global, undefined) {
+(function (global, undefined) {
     'use strict';
 
     var modules = {},
         shims = {},
         nodeRequire = global.require;
-    
+
     function isOfType (obj, type) {
         var objType = /\[\S+\s(\S+)]/.exec(Object.prototype.toString.apply(obj))[1];
         return objType.toUpperCase() === type.toUpperCase();
     }
-    
+
     function getPropertyCaseInsensitive (obj, prop) {
         if (typeof prop === 'undefined') {
             return undefined;
-        } 
+        }
 
         prop = prop.toUpperCase();
         for (var key in obj) {
@@ -26,7 +26,9 @@
 
     function getProperty (obj, path) {
         var parts, idx;
-        if (!path) return undefined;
+        if (!path) {
+            return undefined;
+        }
 
         parts = path.split('.');
         for (idx = 0; idx < parts.length; idx++) {
@@ -57,13 +59,13 @@
             init = deps;
             deps = [];
         }
-        
-        if (!isOfType(name, 'string') || 
-            !isOfType(deps, 'array') || 
-            (!isOfType(init, 'function') && !isOfType(init, 'object'))) {
+
+        if (!isOfType(name, 'string') ||
+            !isOfType(deps, 'array') ||
+            typeof init === 'undefined') {
             throw new Error('Invalid params order');
         }
-        
+
         if (typeof getPropertyCaseInsensitive(modules, name) !== 'undefined') {
             throw new Error('Module cannot be defined more than once');
         }
@@ -87,10 +89,10 @@
         return name.split('/').filter(function (e) { return !!e.trim(); });
     }
 
-    function hasModule (name) {
-        return !isOfType(getPropertyCaseInsensitive(modules, name), 'undefined');
+    function hasModule(name) {
+        return modules.hasOwnProperty(name);
     }
- 
+
     function globDependencyName (module, dependency) {
         var name;
 
@@ -100,19 +102,26 @@
             module = getNameParts(module);
             dependency = getNameParts(dependency);
 
+            module.pop();
             if (dependency[0] === '.') {
-                name = module.slice(0, -1).concat(dependency.slice(1, dependency.length));
+                name = module.concat(dependency.slice(1, dependency.length));
             } else if (dependency[0] === '..') {
-                name = module.slice(0, -2).concat(dependency.slice(1, dependency.length)); 
+                while (dependency[0] === '..') {
+                    module.pop();
+                    dependency.shift();
+                }
+                name = module.concat(dependency);
             } else {
-                name = module.slice(0, -1).concat(dependency);       
+                name = module.concat(dependency);
             }
+
             name = name.join('/');
 
             if (hasModule(name)) {
                 return name;
             }
         }
+
         return dependency.join('/');
     }
 
@@ -176,7 +185,7 @@
 
     /**
      * Configures require by RequireJS conventions.
-     * @params {object} cfg - config. 
+     * @params {object} cfg - config.
      */
     require.config = function (cfg) {
         /*
@@ -193,12 +202,19 @@
         shims = cfg.shim || shims || {};
     };
 
-    Object.defineProperty(require, 'hasNativeRequire', {        
-       enumerable: true,
-       configurable: false,
-       get: function () {
-           return !!nodeRequire;
-       }
+    /**
+     * Removes model definition.
+     */
+    require.undefine = function (name) {
+        delete modules[name];
+    };
+
+    Object.defineProperty(require, 'hasNativeRequire', {
+        enumerable: true,
+        configurable: false,
+        get: function () {
+            return !!nodeRequire;
+        }
     });
 
     // export global functions
