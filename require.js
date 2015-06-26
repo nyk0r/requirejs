@@ -70,6 +70,7 @@
             throw new Error('Module cannot be defined more than once');
         }
 
+        name = getNameParts(name).join('/');
         if (isOfType(init, 'function')) {
             modules[name] = {
                 name: name,
@@ -86,40 +87,27 @@
     }
 
     function getNameParts (name) {
-        return name.split('/').filter(function (e) { return !!e.trim(); });
+        return name.split('/').
+            filter(function (p) { return !!p.trim(); }).
+            map(function (p) { return p.trim(); });
     }
 
     function hasModule(name) {
         return modules.hasOwnProperty(name);
     }
 
-    function globDependencyName (module, dependency) {
-        var name;
+    function globDependencyName(module, dependency) {
+        module = getNameParts(module);
+        dependency = getNameParts(dependency);
 
-        if (hasModule(dependency)) {
-            return dependency;
-        } else {
-            module = getNameParts(module);
-            dependency = getNameParts(dependency);
-
+        if (['.', '..'].indexOf(dependency[0]) !== -1) {
             module.pop();
-            if (dependency[0] === '.') {
-                name = module.concat(dependency.slice(1, dependency.length));
-            } else if (dependency[0] === '..') {
-                while (dependency[0] === '..') {
+            while (['.', '..'].indexOf(dependency[0]) !== -1) {
+                if (dependency.shift() === '..') {
                     module.pop();
-                    dependency.shift();
                 }
-                name = module.concat(dependency);
-            } else {
-                name = module.concat(dependency);
             }
-
-            name = name.join('/');
-
-            if (hasModule(name)) {
-                return name;
-            }
+            return module.concat(dependency).join('/');
         }
 
         return dependency.join('/');

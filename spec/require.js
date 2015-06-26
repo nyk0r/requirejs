@@ -77,12 +77,24 @@ describe('Require and define mechanism', function () {
         });
 
         it('which can have dependencies', function () {
+            var factory = sinon.spy();
+
             define('dep1', 'dep1');
             define('dep2', 'dep2');
+            define('core/dep1', 'core/dep1');
+            define('/core/dep2', 'core/dep2');
+            define('/core/dep3', 'core/dep3');
 
-            define('factory', ['dep1', 'dep2'], function () {
-            });
+            define('factory', ['dep1', 'dep2', '/core/dep1', 'core/dep2', '/core/dep3'], factory);
             require('factory');
+
+            expect(factory.alwaysCalledWithExactly(
+                'dep1',
+                'dep2',
+                'core/dep1',
+                'core/dep2',
+                'core/dep3'
+            )).to.be.true;
 
             require.undefine('dep1');
             require.undefine('dep2');
@@ -96,7 +108,7 @@ describe('Require and define mechanism', function () {
             define('tests/dep2', 'tests/dep2');
             define('tests/sub1/dep3', 'tests/sub1/dep3');
             define('tests/sub1/sub2/sub3/dep4', 'tests/sub1/sub2/sub3/dep4');
-            define('tests/sub2/dep5', 'tests/sub2/dep5')
+            define('tests/sub2/dep5', 'tests/sub2/dep5');
 
             define(
                 'tests/sub1/sub2/factory',
