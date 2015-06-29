@@ -5,9 +5,8 @@
         shims = {},
         nodeRequire = global.require;
 
-    function isOfType (obj, type) {
-        var objType = /\[\S+\s(\S+)]/.exec(Object.prototype.toString.apply(obj))[1];
-        return objType.toUpperCase() === type.toUpperCase();
+    function isOfType(obj, type) {
+        return Object.prototype.toString.apply(obj).slice(8, -1).toUpperCase() === type.toUpperCase();
     }
 
     function getPropertyCaseInsensitive (obj, prop) {

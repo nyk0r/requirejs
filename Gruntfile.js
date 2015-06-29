@@ -2,7 +2,7 @@ module.exports = function (grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         jshint: {
-            files: ['require.js']
+            files: ['require.js', 'Gruntfile.js']
         },
         mocha: {
             test: {
