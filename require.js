@@ -157,7 +157,7 @@
         var idx, len,
             depModules = [];
 
-        deps = isOfType(deps, 'array') ? deps : [deps];
+        deps = [].concat(deps);
         for (idx = 0, len = deps.length; idx < len; idx++) {
             depModules.push(requireModule(deps[idx]));
         }
